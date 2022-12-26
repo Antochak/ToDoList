@@ -1,50 +1,79 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {FilterValuesType} from './App';
 import {Button} from "./components/button";
 
+import classes from "./css/ToDoList.module.css";
+
+type FilterValuesType = "all" | "active" | "completed" | '3 tasks';
 type TaskType = {
     id: string
     title: string
     isDone: boolean
 }
-
 type PropsType = {
     title: string
     tasks: Array<TaskType>
     removeTask: (taskId: string) => void
-    changeFilter: (valueFilter: FilterValuesType) => void
     addTask: (title: string) => void
-
+    changeCheckBox: (taskId: string, e: boolean)=>void
+    deleteAllTasks: ()=>void
 }
 
 export function Todolist(props: PropsType) {
     const [newTaskTitle, setNewTaskTitle] = useState('')
-
+    const [error, setError] = useState<string>('')
     const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setNewTaskTitle(e.currentTarget.value)
+        setError('')
     }
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            props.addTask(newTaskTitle)
+            props.addTask(newTaskTitle.trim())
             setNewTaskTitle('')
         }
     }
     const onClickAddTask = () => {
-        props.addTask(newTaskTitle)
-        setNewTaskTitle('')
+        if (newTaskTitle.trim() !== ''){
+            props.addTask(newTaskTitle.trim())
+            setNewTaskTitle('')
+        } else {
+            setError('Title is required')
+        }
     }
-    const onClickChangeFilter = (valueFilter: FilterValuesType) => {
-        props.changeFilter(valueFilter)
+    const onChangeSelectedHandler = ( id: string, e: ChangeEvent<HTMLInputElement>) => {
+        props.changeCheckBox(id, e.currentTarget.checked)
     }
-    const mappedTasks = props.tasks.map(t => {
+    const deleteAllTasksHandler = () => {
+        props.deleteAllTasks()
+    }
+
+    const [filter, setFilter] = useState<FilterValuesType>("all");
+
+    let tasksForTodolist = props.tasks;
+
+    if (filter === "active") {
+        tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
+    }
+    if (filter === "completed") {
+        tasksForTodolist = tasksForTodolist.filter(t => t.isDone === true);
+    }
+    if (filter == '3 tasks') {
+        tasksForTodolist = tasksForTodolist.filter((el, index) => index < 3 ? el == el : '')
+    }
+    function changeFilter(value: FilterValuesType) {
+        setFilter(value);
+        setError('')
+    }
+    const showThreeTasksHandler = (value: FilterValuesType) => {
+        changeFilter(value)
+    }
+    const mappedTasks = tasksForTodolist.map(t => {
         return (
-            <li key={t.id}>
-                <Button buttonName={'Delete'} callBack={()=>props.removeTask(t.id)}/>
-                <input type="checkbox" checked={t.isDone} />
+            <li key={t.id} className={t.isDone ? classes.opacity : ''}>
+                <Button buttonName={'Delete'} callBack={()=>props.removeTask(t.id)} />
+                <input type="checkbox" checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)}/>
                 <span>{t.title}</span>
             </li>
         )})
-
     return (<div>
         <h3>{props.title}</h3>
         <div>
@@ -53,13 +82,18 @@ export function Todolist(props: PropsType) {
                    onKeyDown={onKeyPressHandler}/>
             <Button buttonName={'Add'} callBack={onClickAddTask}/>
         </div>
+        <div className={classes.error}>{error}</div>
         <ul>
             {mappedTasks}
         </ul>
         <div>
-           <Button buttonName={'all'} callBack={()=>onClickChangeFilter('all')}/>
-           <Button buttonName={'active'} callBack={()=>onClickChangeFilter('active')}/>
-           <Button buttonName={'completed'} callBack={()=>onClickChangeFilter('completed')}/>
+           <Button filter={filter} buttonName={'all'}  callBack={()=>changeFilter('all')}/>
+           <Button filter={filter} buttonName={'active'} callBack={()=>changeFilter('active')}/>
+           <Button filter={filter} buttonName={'completed'} callBack={()=>changeFilter('completed')}/>
+           <Button filter={filter} buttonName={'3 tasks'} callBack={()=>showThreeTasksHandler('3 tasks')}/>
+        </div>
+        <div>
+            <Button buttonName={'Delete All'} callBack={deleteAllTasksHandler}/>
         </div>
     </div>)
 }
