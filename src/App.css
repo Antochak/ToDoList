@@ -1,11 +1,15 @@
 
 .App {
-  padding: 30px;
+
+}
+.AppWrapper {
+  margin-top: 20px;
   display: flex;
+  flex-direction: row;
 }
 
 .App > div {
-  margin-right: 50px;
+
 }
 
 .error {

@@ -1,9 +1,20 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {Button} from "./components/button";
+import React, {ChangeEvent} from 'react';
+import {UniversButton} from "./components/button";
 import classes from "./css/ToDoList.module.css";
 import {FilterValuesType} from "./App";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditTaskTitle} from "./components/EditSpan";
+import {Delete} from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import IconButton from "@material-ui/core/IconButton";
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+
+
+
+
 
 type TaskType = {
     id: string
@@ -51,8 +62,11 @@ export function Todolist(props: PropsType) {
         }
         return (
             <li key={t.id} className={t.isDone ? classes.opacity : ''}>
-                <Button buttonName={'Delete'} callBack={()=>props.removeTask(props.todoListId, t.id)} />
-                <input type="checkbox" checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)}/>
+                <IconButton aria-label="delete" onClick={()=>props.removeTask(props.todoListId, t.id)}>
+                    <Delete />
+                </IconButton>
+                {/*<input type="checkbox" checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)}/>*/}
+                <Checkbox checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)} defaultChecked color="default"/>
                 <EditTaskTitle title={t.title} onChange={onChangeTaskTitleHandler}/>
             </li>
         )})
@@ -60,28 +74,54 @@ export function Todolist(props: PropsType) {
         <div>
             <h3>
                 <EditTaskTitle title={props.title} onChange={ChangeTodolistTitleHandler}/>
-                <Button buttonName={'Delete list'} callBack={deleteTodolistHandler}/>
+                {/*<UniversButton buttonName={'Delete list'} callBack={deleteTodolistHandler}/>*/}
+                <Button variant="outlined"
+                        startIcon={<Delete />}
+                        onClick={deleteTodolistHandler}>
+                </Button>
             </h3>
         <AddItemForm addItem={addTask} />
             <ul>
                 {mappedTasks}
             </ul>
             <div>
-               <Button
-                       filter={props.filter} buttonName={'all'}
-                       callBack={()=>props.changeFilter(props.todoListId, 'all')}/>
-               <Button filter={props.filter}
-                       buttonName={'active'}
-                       callBack={()=>props.changeFilter(props.todoListId,'active')}/>
-               <Button filter={props.filter}
-                       buttonName={'completed'}
-                       callBack={()=>props.changeFilter(props.todoListId,'completed')}/>
-               <Button filter={props.filter}
-                       buttonName={'3 tasks'}
-                       callBack={()=>showThreeTasksHandler(props.todoListId,'3 tasks')}/>
+                <ButtonGroup size="small" aria-label="small button group">
+                   <Button variant="outlined"
+                           color={"primary"}
+                           onClick={()=>props.changeFilter(props.todoListId, 'all')}>
+                       all
+                   </Button>
+                    <Button variant="outlined"
+                            color={"primary"}
+                            onClick={()=>props.changeFilter(props.todoListId,'active')}>
+                        active
+                    </Button>
+                    <Button variant="outlined"
+                            color={"primary"}
+                            onClick={()=>props.changeFilter(props.todoListId,'completed')}>
+                        completed
+                    </Button>
+                    <Button variant="outlined"
+                            color={"primary"}
+                            onClick={()=>showThreeTasksHandler(props.todoListId,'3 tasks')}>
+                        3 tasks
+                    </Button>
+                </ButtonGroup>
+               {/*<UniversButton*/}
+               {/*        filter={props.filter} buttonName={'all'}*/}
+               {/*        callBack={()=>props.changeFilter(props.todoListId, 'all')}/>*/}
+               {/*<UniversButton filter={props.filter}*/}
+               {/*        buttonName={'active'}*/}
+               {/*        callBack={()=>props.changeFilter(props.todoListId,'active')}/>*/}
+               {/*<UniversButton filter={props.filter}*/}
+               {/*        buttonName={'completed'}*/}
+               {/*        callBack={()=>props.changeFilter(props.todoListId,'completed')}/>*/}
+               {/*<UniversButton filter={props.filter}*/}
+               {/*        buttonName={'3 tasks'}*/}
+               {/*        callBack={()=>showThreeTasksHandler(props.todoListId,'3 tasks')}/>*/}
             </div>
         <div>
-            <Button buttonName={'Delete All'} callBack={deleteAllTasksHandler}/>
+            <UniversButton buttonName={'Delete All'} callBack={deleteAllTasksHandler}/>
         </div>
     </div>)
 }

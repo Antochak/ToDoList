@@ -1,16 +1,22 @@
+import Button from '@material-ui/core/Button';
 import React from 'react'
 import classes from "../css/ToDoList.module.css";
+
 
 export type ButtonType = {
     buttonName: string
     callBack: ()=>void
     filter?: string
 }
-export const Button = (props: ButtonType) => {
+
+export const UniversButton = (props: ButtonType) => {
     const onClickHandler = () => props.callBack()
-    return <button
+    return <Button
+        variant={"contained"}
+        color={"primary"}
+        size={"small"}
         className={props.buttonName === props.filter ? classes.activeFilter : ""}
         onClick={onClickHandler}
     >
-        {props.buttonName}</button>
+        {props.buttonName}</Button>
 }
