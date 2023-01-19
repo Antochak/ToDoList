@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import {Container} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 
-type ToDoListType = {
+export type ToDoListType = {
     id: string
     title: string
 }

@@ -1,6 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {UniversButton} from "./button";
-import classes from "../css/ToDoList.module.css";
+import classes from "./style/ToDoList.module.css";
 import TextField from "@material-ui/core/TextField";
 
 

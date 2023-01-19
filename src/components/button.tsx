@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button';
 import React from 'react'
-import classes from "../css/ToDoList.module.css";
+import classes from "./style/ToDoList.module.css";
 
 
 export type ButtonType = {

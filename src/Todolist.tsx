@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from 'react';
 import {UniversButton} from "./components/button";
-import classes from "./css/ToDoList.module.css";
+import classes from "./components/style/ToDoList.module.css";
 import {FilterValuesType} from "./App";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditTaskTitle} from "./components/EditSpan";
@@ -8,12 +8,7 @@ import {Delete} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import IconButton from "@material-ui/core/IconButton";
-import Checkbox from '@material-ui/core/Checkbox';
-
-
-
-
-
+import {UCheckbox} from "./components/Checkbox";
 
 
 type TaskType = {
@@ -26,7 +21,7 @@ type PropsType = {
     tasks: Array<TaskType>
     removeTask: (todoListId: string, taskId: string) => void
     addTask: (todoListId: string, title: string) => void
-    changeCheckBox: (todoListId: string, taskId: string, e: boolean)=>void
+    changeCheckBox: (todoListId: string, taskId: string, CheckboxValue: boolean)=>void
     deleteAllTasks: (todoListId: string)=>void
     filter: FilterValuesType
     changeFilter: (todoListId: string,value: FilterValuesType)=>void
@@ -38,46 +33,54 @@ type PropsType = {
 
 export function Todolist(props: PropsType) {
 
-    const onChangeSelectedHandler = ( id: string, e: ChangeEvent<HTMLInputElement>) => {
-        props.changeCheckBox(props.todoListId ,id, e.currentTarget.checked)
+    const onChangeSelectedHandler = ( id: string, CheckboxValue: boolean) => {
+        props.changeCheckBox(props.todoListId ,id, CheckboxValue)
     }
-    const deleteAllTasksHandler = () => {
-        props.deleteAllTasks(props.todoListId)
-    }
-    const deleteTodolistHandler = () => {
-        props.deleteTodolist(props.todoListId)
-    }
+    const deleteAllTasksHandler = () => props.deleteAllTasks(props.todoListId)
+
+    const deleteTodolistHandler = () => props.deleteTodolist(props.todoListId)
+
     const showThreeTasksHandler = (todoListId: string, value: FilterValuesType) => {
         props.changeFilter(todoListId, value)
     }
-    const addTask = (title: string) => {
-        props.addTask(props.todoListId, title)
-    }
+    const addTask = (title: string) => props.addTask(props.todoListId, title)
+
     const ChangeTodolistTitleHandler = (newTodolistTitle: string) => {
         props.editTodolistTitle(props.todoListId, newTodolistTitle)
     }
+    const onChangeTaskTitleHandler = (newTaskTitleValue: string, taskId: string) => {
+        props.editTaskTitle(props.todoListId, newTaskTitleValue, taskId)
+    }
     const mappedTasks = props.tasks.map(t => {
-        const onChangeTaskTitleHandler = (newTaskTitleValue: string) => {
-            props.editTaskTitle(props.todoListId, newTaskTitleValue, t.id)
-        }
         return (
             <li key={t.id} className={t.isDone ? classes.opacity : ''}>
-                <IconButton aria-label="delete" onClick={()=>props.removeTask(props.todoListId, t.id)}>
+                <IconButton
+                    aria-label="delete"
+                    onClick={()=>props.removeTask(props.todoListId, t.id)}
+                >
                     <Delete />
                 </IconButton>
-                {/*<input type="checkbox" checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)}/>*/}
-                <Checkbox checked={t.isDone} onChange={(e)=>onChangeSelectedHandler(t.id, e)} defaultChecked color="default"/>
-                <EditTaskTitle title={t.title} onChange={onChangeTaskTitleHandler}/>
+                <UCheckbox
+                    callback={(CheckboxValue)=>onChangeSelectedHandler(t.id, CheckboxValue)}
+                    isDone={t.isDone}
+                />
+                <EditTaskTitle
+                    title={t.title}
+                    onChange={(newTaskTitleValue)=>onChangeTaskTitleHandler(newTaskTitleValue, t.id)}
+                />
             </li>
         )})
     return (
         <div>
             <h3>
-                <EditTaskTitle title={props.title} onChange={ChangeTodolistTitleHandler}/>
-                {/*<UniversButton buttonName={'Delete list'} callBack={deleteTodolistHandler}/>*/}
+                <EditTaskTitle
+                    title={props.title}
+                    onChange={ChangeTodolistTitleHandler}
+                />
                 <Button variant="outlined"
                         startIcon={<Delete />}
-                        onClick={deleteTodolistHandler}>
+                        onClick={deleteTodolistHandler}
+                >
                 </Button>
             </h3>
         <AddItemForm addItem={addTask} />
@@ -121,7 +124,10 @@ export function Todolist(props: PropsType) {
                {/*        callBack={()=>showThreeTasksHandler(props.todoListId,'3 tasks')}/>*/}
             </div>
         <div>
-            <UniversButton buttonName={'Delete All'} callBack={deleteAllTasksHandler}/>
+            <UniversButton
+                buttonName={'Delete All'}
+                callBack={deleteAllTasksHandler}
+            />
         </div>
     </div>)
 }
