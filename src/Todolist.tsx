@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from 'react';
 import {UniversButton} from "./components/button";
 import classes from "./components/style/ToDoList.module.css";
-import {FilterValuesType} from "./App";
+import {FilterValuesType, TasksType} from "./App";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditTaskTitle} from "./components/EditSpan";
 import {Delete} from "@material-ui/icons";
@@ -11,14 +11,10 @@ import IconButton from "@material-ui/core/IconButton";
 import {UCheckbox} from "./components/Checkbox";
 
 
-type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
+
 type PropsType = {
     title: string
-    tasks: Array<TaskType>
+    tasks: Array<TasksType>
     removeTask: (todoListId: string, taskId: string) => void
     addTask: (todoListId: string, title: string) => void
     changeCheckBox: (todoListId: string, taskId: string, CheckboxValue: boolean)=>void
