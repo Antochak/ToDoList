@@ -1,13 +1,18 @@
 import {ToDoListType} from "../App";
 import {v1} from "uuid";
 
+export type removeTodoListACType = ReturnType<typeof removeTodoListAC>
+export type addTodoListTitleACType = ReturnType<typeof addTodoListAC>
+export type editTodolistTitleACType = ReturnType<typeof editTodolistTitleAC>
+
+export type ActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType
+
 export const TodoListReducer = (state: ToDoListType[], action: ActionsType):ToDoListType[] => {
     switch (action.type) {
         case 'REMOVE_TODOLIST':
                 return state.filter(el=>el.id !== action.payload.todoListId);
         case 'ADD_TODOLIST':
-            const newTodolistId = v1()
-            let newToDoList:ToDoListType = {id: newTodolistId, title: action.payload.title}
+            let newToDoList:ToDoListType = {id: action.payload.todoListId, title: action.payload.title}
             return [...state, newToDoList];
         case 'CHANGE_TDL_TITLE':
             return state.map(list=>list.id == action.payload.todoListId ? {...list, title: action.payload.title} : list);
@@ -15,12 +20,6 @@ export const TodoListReducer = (state: ToDoListType[], action: ActionsType):ToDo
             throw new Error('Bad type')
     }
 }
-
-type ActionsType = removeTodoListACType | addTodoListTitleACType | ChangeTodolistTitleACType
-
-export type removeTodoListACType = ReturnType<typeof removeTodoListAC>
-export type addTodoListTitleACType = ReturnType<typeof addTodoListAC>
-type ChangeTodolistTitleACType = ReturnType<typeof ChangeTodolistTitleAC>
 
 export const removeTodoListAC = (todoListId: string) => {
     return {
@@ -34,11 +33,12 @@ export const addTodoListAC = (title: string) => {
     return {
         type: 'ADD_TODOLIST',
         payload: {
-            title: title
+            title: title,
+            todoListId: v1()
         }
     } as const
 }
-export const ChangeTodolistTitleAC = (todoListId: string, title: string) => {
+export const editTodolistTitleAC = (todoListId: string, title: string) => {
     return {
         type: 'CHANGE_TDL_TITLE',
         payload: {

@@ -1,12 +1,14 @@
 import {FilterValuesType} from "../App";
 import {v1} from "uuid";
-import {removeTodoListACType} from "./TodoList-Reducer";
+import {addTodoListTitleACType, removeTodoListACType} from "./TodoList-Reducer";
 
 type removeTaskACType = ReturnType<typeof removeTaskAC>
+type removeAllTaskACType = ReturnType<typeof removeAllTaskAC>
 type addTaskACType = ReturnType<typeof addTaskAC>
 type changeStatusTaskACType = ReturnType<typeof changeStatusTaskAC>
-type changeTaskTitleACType = ReturnType<typeof changeTaskTitleAC>
+type changeTaskTitleACType = ReturnType<typeof editTaskTitleAC>
 type changeFilterACType = ReturnType<typeof changeFilterAC>
+
 
 export type TaskStateType = {
     [key: string]: DataType
@@ -21,13 +23,16 @@ export type TasksType = {
     isDone: boolean
 }
 
-type ActionsTypes = removeTaskACType
+export type ActionsTypesTasks = removeTaskACType
     | addTaskACType
     | changeStatusTaskACType
     | changeTaskTitleACType
     | changeFilterACType
     | removeTodoListACType
-export const TaskReducer = (state: TaskStateType, action: ActionsTypes): TaskStateType => {
+    | removeAllTaskACType
+    | addTodoListTitleACType
+
+export const TaskReducer = (state: TaskStateType, action: ActionsTypesTasks): TaskStateType => {
     switch (action.type) {
         case 'REMOVE_TASK':
             return {
@@ -38,6 +43,14 @@ export const TaskReducer = (state: TaskStateType, action: ActionsTypes): TaskSta
                         state[action.todoListId].data.filter(t => t.id !== action.taskId)
                 }
             }
+        case 'REMOVE_ALL_TASKS':
+            return {
+                 ...state,
+                    [action.todoListId]:{...state[action.todoListId],
+                        data: state[action.todoListId].data.filter(el=>!el)
+                    }
+                }
+
         case 'ADD_TASK':
             let newTask = {id: v1(), title: action.title, isDone: false}
             return {
@@ -79,15 +92,23 @@ export const TaskReducer = (state: TaskStateType, action: ActionsTypes): TaskSta
             let stateCopy = {...state}
             delete stateCopy[action.payload.todoListId]
             return stateCopy
+        case 'ADD_TODOLIST':
+            return {[action.payload.todoListId]: {...state[action.payload.todoListId], data: []}, ...state}
         default:
             throw new Error('Bad type')
     }
 }
 
-export const removeTaskAC = (taskId: string, todoListId: string) => {
+export const removeTaskAC = (todoListId: string,taskId: string) => {
     return {
         type: 'REMOVE_TASK',
         taskId,
+        todoListId
+    } as const // для типизации
+}
+export const removeAllTaskAC = (todoListId: string) => {
+    return {
+        type: 'REMOVE_ALL_TASKS',
         todoListId
     } as const // для типизации
 }
@@ -106,7 +127,7 @@ export const changeStatusTaskAC = (todoListId: string, taskId: string, value: bo
         value
     } as const
 }
-export const changeTaskTitleAC = (todoListId: string, taskId: string, newTitle: string) => {
+export const editTaskTitleAC = (todoListId: string, taskId: string, newTitle: string) => {
     return {
         type: 'CHANGE_TASK_TITLE',
         todoListId,
@@ -121,9 +142,4 @@ export const changeFilterAC = (todoListId: string, value: FilterValuesType) => {
         value
     } as const
 }
-export const deleteTodolistWithTasksAC = (todoListId: string) => {
-    return {
-        type: 'DELETE_TASKS_AND_TDL',
-        todoListId
-    } as const
-}
+
