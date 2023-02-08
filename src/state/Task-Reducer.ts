@@ -32,7 +32,8 @@ export type ActionsTypesTasks = removeTaskACType
     | removeAllTaskACType
     | addTodoListTitleACType
 
-export const TaskReducer = (state: TaskStateType, action: ActionsTypesTasks): TaskStateType => {
+const initialState: TaskStateType = {}
+export const TaskReducer = (state=initialState, action: ActionsTypesTasks): TaskStateType => {
     switch (action.type) {
         case 'REMOVE_TASK':
             return {
@@ -89,13 +90,13 @@ export const TaskReducer = (state: TaskStateType, action: ActionsTypesTasks): Ta
                 }
             }
         case 'REMOVE_TODOLIST':
-            let stateCopy = {...state}
-            delete stateCopy[action.payload.todoListId]
+            const stateCopy = {...state}
+            delete stateCopy[action.todoListId]
             return stateCopy
         case 'ADD_TODOLIST':
-            return {[action.payload.todoListId]: {...state[action.payload.todoListId], data: []}, ...state}
+            return {[action.todoListId]: {...state[action.todoListId], data: [], filter: 'all'}, ...state}
         default:
-            throw new Error('Bad type')
+          return state
     }
 }
 

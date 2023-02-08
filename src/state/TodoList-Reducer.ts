@@ -1,4 +1,3 @@
-import {ToDoListType} from "../App";
 import {v1} from "uuid";
 
 export type removeTodoListACType = ReturnType<typeof removeTodoListAC>
@@ -7,43 +6,42 @@ export type editTodolistTitleACType = ReturnType<typeof editTodolistTitleAC>
 
 export type ActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType
 
-export const TodoListReducer = (state: ToDoListType[], action: ActionsType):ToDoListType[] => {
+export type ToDoListType = {
+    id: string
+    title: string
+}
+const initialState:ToDoListType[]=[]
+
+export const TodoListReducer = (state=initialState, action: ActionsType):ToDoListType[] => {
     switch (action.type) {
         case 'REMOVE_TODOLIST':
-                return state.filter(el=>el.id !== action.payload.todoListId);
+                return state.filter(el=>el.id !== action.todoListId);
         case 'ADD_TODOLIST':
-            let newToDoList:ToDoListType = {id: action.payload.todoListId, title: action.payload.title}
-            return [...state, newToDoList];
+            return [{id: action.todoListId, title: action.title}, ...state ];
         case 'CHANGE_TDL_TITLE':
-            return state.map(list=>list.id == action.payload.todoListId ? {...list, title: action.payload.title} : list);
+            return state.map(list=>list.id == action.todoListId ? {...list, title: action.title} : list);
         default:
-            throw new Error('Bad type')
+          return state
     }
 }
 
 export const removeTodoListAC = (todoListId: string) => {
     return {
         type: 'REMOVE_TODOLIST',
-        payload: {
-           todoListId: todoListId
-       }
+        todoListId: todoListId
     } as const // для типизации
 }
 export const addTodoListAC = (title: string) => {
     return {
         type: 'ADD_TODOLIST',
-        payload: {
-            title: title,
-            todoListId: v1()
-        }
+        title: title,
+        todoListId: v1()
     } as const
 }
 export const editTodolistTitleAC = (todoListId: string, title: string) => {
     return {
         type: 'CHANGE_TDL_TITLE',
-        payload: {
-            title: title,
-            todoListId: todoListId
-        }
+        title: title,
+        todoListId: todoListId
     } as const
 }
