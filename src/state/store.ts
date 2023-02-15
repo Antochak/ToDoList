@@ -1,6 +1,6 @@
 import {TodoListReducer} from "./TodoList-Reducer";
 import {TaskReducer} from "./Task-Reducer";
-import {combineReducers,legacy_createStore} from 'redux'
+import {combineReducers, legacy_createStore} from 'redux'
 
 // объединяя наши редьюсеры в combineRedusers мы задаем структуру нашего единственного объекта состояния
 const rootReducer = combineReducers({

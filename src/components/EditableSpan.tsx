@@ -1,17 +1,17 @@
 import TextField from "@material-ui/core/TextField";
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, memo, useState} from "react";
 
 
 type EditTitlePropsType = {
     title: string
-    onChange: (taskTitle: string)=>void
+    onChange: (taskTitle: string) => void
 }
 
-export const EditTaskTitle = (props: EditTitlePropsType) => {
+export const EditableSpan = memo((props: EditTitlePropsType) => {
     const [editMode, setEditMode] = useState<boolean>(false)
-    const [taskTitle,setTaskTitle] = useState<string>(props.title)
+    const [taskTitle, setTaskTitle] = useState<string>(props.title)
 
-    const editSpan =() => {
+    const editSpan = () => {
         setEditMode(true)
         setTaskTitle(props.title)
     }
@@ -28,4 +28,4 @@ export const EditTaskTitle = (props: EditTitlePropsType) => {
             : <span onDoubleClick={editSpan}> {props.title || '(not defined)'} </span>
     )
 
-}
+})

@@ -3,7 +3,7 @@ import {UniversButton} from "./components/button";
 import classes from "./components/style/ToDoList.module.css";
 import {FilterValuesType, TasksType} from "./App";
 import {AddItemForm} from "./components/AddItemForm";
-import {EditTaskTitle} from "./components/EditSpan";
+import {EditableSpan} from "./components/EditableSpan";
 import {Delete} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -60,7 +60,7 @@ export function Todolist(props: PropsType) {
                     callback={(CheckboxValue)=>onChangeSelectedHandler(t.id, CheckboxValue)}
                     isDone={t.isDone}
                 />
-                <EditTaskTitle
+                <EditableSpan
                     title={t.title}
                     onChange={(newTaskTitleValue)=>onChangeTaskTitleHandler(newTaskTitleValue, t.id)}
                 />
@@ -69,7 +69,7 @@ export function Todolist(props: PropsType) {
     return (
         <div>
             <h3>
-                <EditTaskTitle
+                <EditableSpan
                     title={props.title}
                     onChange={ChangeTodolistTitleHandler}
                 />

@@ -33,7 +33,7 @@ export type ActionsTypesTasks = removeTaskACType
     | addTodoListTitleACType
 
 const initialState: TaskStateType = {}
-export const TaskReducer = (state=initialState, action: ActionsTypesTasks): TaskStateType => {
+export const TaskReducer = (state = initialState, action: ActionsTypesTasks): TaskStateType => {
     switch (action.type) {
         case 'REMOVE_TASK':
             return {
@@ -46,11 +46,13 @@ export const TaskReducer = (state=initialState, action: ActionsTypesTasks): Task
             }
         case 'REMOVE_ALL_TASKS':
             return {
-                 ...state,
-                    [action.todoListId]:{...state[action.todoListId],
-                        data: state[action.todoListId].data.filter(el=>!el)
-                    }
+                ...state,
+                [action.todoListId]: {
+                    ...state[action.todoListId],
+                    data:
+                        state[action.todoListId].data.filter(el => !el)
                 }
+            }
 
         case 'ADD_TASK':
             let newTask = {id: v1(), title: action.title, isDone: false}
@@ -76,10 +78,11 @@ export const TaskReducer = (state=initialState, action: ActionsTypesTasks): Task
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data: [...state[action.todoListId].data.map(t => t.id == action.taskId
-                        ? {...t, title: action.newTitle}
-                        : t)
-                    ]
+                    data:
+                        state[action.todoListId].data.map(t => t.id == action.taskId
+                            ? {...t, title: action.newTitle}
+                            : t)
+
                 }
             }
         case 'CHANGE_FILTER':
@@ -96,11 +99,11 @@ export const TaskReducer = (state=initialState, action: ActionsTypesTasks): Task
         case 'ADD_TODOLIST':
             return {[action.todoListId]: {...state[action.todoListId], data: [], filter: 'all'}, ...state}
         default:
-          return state
+            return state
     }
 }
 
-export const removeTaskAC = (todoListId: string,taskId: string) => {
+export const removeTaskAC = (todoListId: string, taskId: string) => {
     return {
         type: 'REMOVE_TASK',
         taskId,
@@ -128,7 +131,7 @@ export const changeStatusTaskAC = (todoListId: string, taskId: string, value: bo
         value
     } as const
 }
-export const editTaskTitleAC = (todoListId: string, taskId: string, newTitle: string) => {
+export const editTaskTitleAC = (todoListId: string, newTitle: string, taskId: string) => {
     return {
         type: 'CHANGE_TASK_TITLE',
         todoListId,

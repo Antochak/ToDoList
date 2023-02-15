@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, memo, useState} from "react";
 import {UniversButton} from "./button";
 import classes from "./style/ToDoList.module.css";
 import TextField from "@material-ui/core/TextField";
@@ -8,8 +8,8 @@ export type AddItemFormPropsType = {
     addItem: (title: string)=>void
 }
 
-export const AddItemForm = (props: AddItemFormPropsType) => {
-
+export const AddItemForm = memo((props: AddItemFormPropsType) => {
+    console.log('add item form')
     const [newTaskTitle, setNewTaskTitle] = useState('')
     const [error, setError] = useState<string>('')
 
@@ -47,4 +47,4 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
             {/*<div className={classes.error}>{error}</div>*/}
         </div>
     )
-}
+})
