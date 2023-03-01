@@ -1,10 +1,10 @@
-import {TaskStateType} from "../App";
+
 import {
     addTaskAC,
     changeFilterAC,
     changeStatusTaskAC,
     removeTaskAC,
-    TaskReducer
+    TaskReducer, TaskStateType
 } from "./Task-Reducer";
 import {addTodoListAC, removeTodoListAC} from "./TodoList-Reducer";
 import {keys} from "@material-ui/core/styles/createBreakpoints";
@@ -14,7 +14,7 @@ let startState:TaskStateType
 beforeEach(()=> {
     startState = {
         'toDoLists1': {
-            data: [
+            tasksList: [
                 {id: '1', title: "HTML&CSS", isDone: true},
                 {id: '2', title: "JS", isDone: true},
                 {id: '3', title: "ReactJS", isDone: false},
@@ -24,7 +24,7 @@ beforeEach(()=> {
             filter: 'all'
         },
         'toDoLists2': {
-            data: [
+            tasksList: [
                 {id: '1', title: "Whiskey", isDone: true},
                 {id: '2', title: "Cola", isDone: true},
                 {id: '3', title: "Sprite", isDone: false},
@@ -42,7 +42,7 @@ test('correct task should be deleted from correct array', ()=> {
     const endState = TaskReducer(startState,action)
     expect(endState).toEqual({
         'toDoLists1': {
-            data: [
+            tasksList: [
                 {id: '1', title: "HTML&CSS", isDone: true},
                 {id: '2', title: "JS", isDone: true},
                 {id: '3', title: "ReactJS", isDone: false},
@@ -52,7 +52,7 @@ test('correct task should be deleted from correct array', ()=> {
             filter: 'all'
         },
         'toDoLists2': {
-            data: [
+            tasksList: [
                 {id: '1', title: "Whiskey", isDone: true},
                 {id: '3', title: "Sprite", isDone: false},
                 {id: '4', title: "Fanta", isDone: false},
@@ -66,15 +66,15 @@ test('correct task should be added from correct array', ()=> {
     const action = addTaskAC('toDoLists2','Water')
     const endState = TaskReducer(startState, action)
 
-    expect(endState['toDoLists2'].data.length).toBe(6)
-    expect(endState['toDoLists2'].data[0].title).toBe('Water')
-    expect(endState['toDoLists2'].data[0].id).toBeDefined()
+    expect(endState['toDoLists2'].tasksList.length).toBe(6)
+    expect(endState['toDoLists2'].tasksList[0].title).toBe('Water')
+    expect(endState['toDoLists2'].tasksList[0].id).toBeDefined()
 })
 test('correct task status should be changed from correct array', ()=> {
     const action = changeStatusTaskAC('toDoLists2', '2', false)
     const endState = TaskReducer(startState, action)
 
-    expect(endState['toDoLists2'].data['2'].isDone).toBe(false)
+    expect(endState['toDoLists2'].tasksList['2'].isDone).toBe(false)
 })
 test('correct task filter should be changed from correct array', ()=> {
     const action = changeFilterAC('toDoLists2', 'completed')
@@ -92,7 +92,7 @@ test('Todolist and properties should be added', ()=> {
     if (!newKey) throw Error('New key should be added')
 
     expect(keys.length).toBe(3)
-    expect(endState[newKey].data).toEqual([]) // значение по новому ключу должно соответствовать пустому массиву
+    expect(endState[newKey].tasksList).toEqual([]) // значение по новому ключу должно соответствовать пустому массиву
 })
 test('Todolist and properties should be deleted', ()=> {
     const action = removeTodoListAC('toDoLists2')

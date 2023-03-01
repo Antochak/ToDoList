@@ -1,29 +1,31 @@
 import {v1} from "uuid";
+import {todolistApi, TodolistType} from "../api/todolist-api";
+import {AnyAction, Dispatch} from "redux";
 
-export type removeTodoListACType = ReturnType<typeof removeTodoListAC>
-export type addTodoListTitleACType = ReturnType<typeof addTodoListAC>
-export type editTodolistTitleACType = ReturnType<typeof editTodolistTitleAC>
+export type ActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType | setTodosType
 
-export type ActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType
-
-export type ToDoListType = {
-    id: string
-    title: string
-}
-const initialState: ToDoListType[] = []
-
-export const TodoListReducer = (state = initialState, action: ActionsType): ToDoListType[] => {
+const initialState: TodolistType[] = []
+export const TodoListReducer = (state = initialState, action: any): TodolistType[] => {
     switch (action.type) {
         case 'REMOVE_TODOLIST':
             return state.filter(el => el.id !== action.todoListId);
         case 'ADD_TODOLIST':
-            return [{id: action.todoListId, title: action.title}, ...state];
+            return [{id: action.todoListId, title: action.title, addedDate: '', order: 0}, ...state];
         case 'CHANGE_TDL_TITLE':
-            return state.map(list => list.id == action.todoListId ? {...list, title: action.title} : list);
+            const todolist = state.find(tl=>tl.id == action.todoListId)
+            if(todolist) todolist.title = action.title
+            return [...state]
+            // return state.map(list => list.id == action.todoListId ? {...list, title: action.title} : list);
+        case "SET_TODOS":
+            return [...state, ...action.todos]
         default:
             return state
     }
 }
+export type removeTodoListACType = ReturnType<typeof removeTodoListAC>
+export type addTodoListTitleACType = ReturnType<typeof addTodoListAC>
+export type editTodolistTitleACType = ReturnType<typeof editTodolistTitleAC>
+export type setTodosType = ReturnType<typeof setTodos>
 
 export const removeTodoListAC = (todoListId: string) => {
     return {
@@ -45,3 +47,13 @@ export const editTodolistTitleAC = (todoListId: string, title: string) => {
         todoListId: todoListId
     } as const
 }
+
+export const setTodos = (todos: TodolistType[]) => {
+    return {type: 'SET_TODOS', todos} as const
+}
+export const getTodoTC = () => (dispatch: Dispatch) => {
+        todolistApi.getTodolist()
+            .then((res)=> {
+                dispatch(setTodos(res))
+            })
+    }

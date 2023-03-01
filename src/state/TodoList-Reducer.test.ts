@@ -1,18 +1,19 @@
 import {v1} from "uuid";
-import {ToDoListType} from "../App";
+
 import {addTodoListAC, editTodolistTitleAC, removeTodoListAC, TodoListReducer} from "./TodoList-Reducer";
+import {TodolistType} from "../api/todolist-api";
 
 let toDoLists1:string;
 let toDoLists2:string;
-let startState:ToDoListType[]
+let startState:TodolistType[]
 
 beforeEach(()=> {
      toDoLists1 = v1()
      toDoLists2 = v1()
 
      startState = [
-        {id: toDoLists1, title: 'What to learn'},
-        {id: toDoLists2, title: 'What to drink'}
+        {id: toDoLists1, title: 'What to learn', order: 0, addedDate: ''},
+        {id: toDoLists2, title: 'What to drink', order: 0, addedDate: ''}
     ]
 })
 

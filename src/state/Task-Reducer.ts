@@ -1,6 +1,6 @@
-import {FilterValuesType} from "../App";
 import {v1} from "uuid";
-import {addTodoListTitleACType, removeTodoListACType} from "./TodoList-Reducer";
+import {addTodoListTitleACType, removeTodoListACType, setTodosType} from "./TodoList-Reducer";
+import {FilterValuesType} from "../Todolist";
 
 type removeTaskACType = ReturnType<typeof removeTaskAC>
 type removeAllTaskACType = ReturnType<typeof removeAllTaskAC>
@@ -14,7 +14,7 @@ export type TaskStateType = {
     [key: string]: DataType
 }
 export type DataType = {
-    data: TasksType[]
+    tasksList: TasksType[]
     filter: FilterValuesType
 }
 export type TasksType = {
@@ -31,6 +31,7 @@ export type ActionsTypesTasks = removeTaskACType
     | removeTodoListACType
     | removeAllTaskACType
     | addTodoListTitleACType
+    | setTodosType
 
 const initialState: TaskStateType = {}
 export const TaskReducer = (state = initialState, action: ActionsTypesTasks): TaskStateType => {
@@ -40,8 +41,8 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data:
-                        state[action.todoListId].data.filter(t => t.id !== action.taskId)
+                    tasksList:
+                        state[action.todoListId].tasksList.filter(t => t.id !== action.taskId)
                 }
             }
         case 'REMOVE_ALL_TASKS':
@@ -49,8 +50,8 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data:
-                        state[action.todoListId].data.filter(el => !el)
+                    tasksList:
+                        state[action.todoListId].tasksList.filter(el => !el)
                 }
             }
 
@@ -60,8 +61,8 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data:
-                        [newTask, ...state[action.todoListId].data]
+                    tasksList:
+                        [newTask, ...state[action.todoListId].tasksList]
                 }
             }
         case 'CHANGE_STATUS':
@@ -69,8 +70,8 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data:
-                        state[action.todoListId].data.map(t => t.id == action.taskId ? {...t, isDone: action.value} : t)
+                    tasksList:
+                        state[action.todoListId].tasksList.map(t => t.id == action.taskId ? {...t, isDone: action.value} : t)
                 }
             }
         case 'CHANGE_TASK_TITLE':
@@ -78,8 +79,8 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
                 ...state,
                 [action.todoListId]: {
                     ...state[action.todoListId],
-                    data:
-                        state[action.todoListId].data.map(t => t.id == action.taskId
+                    tasksList:
+                        state[action.todoListId].tasksList.map(t => t.id == action.taskId
                             ? {...t, title: action.newTitle}
                             : t)
 
@@ -97,7 +98,16 @@ export const TaskReducer = (state = initialState, action: ActionsTypesTasks): Ta
             delete stateCopy[action.todoListId]
             return stateCopy
         case 'ADD_TODOLIST':
-            return {[action.todoListId]: {...state[action.todoListId], data: [], filter: 'all'}, ...state}
+            return {[action.todoListId]: {...state[action.todoListId], tasksList: [], filter: 'all'}, ...state}
+        case 'SET_TODOS':
+            const copyState = {...state}
+            action.todos.forEach(tl=>{
+                copyState[tl.id] = {
+                    tasksList: [],
+                    filter:'all'
+                }
+            })
+            return copyState
         default:
             return state
     }
