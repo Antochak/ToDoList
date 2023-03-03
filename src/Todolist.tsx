@@ -1,18 +1,17 @@
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import {UniversButton} from "./components/button";
 import classes from "./components/style/ToDoList.module.css";
-
 import {AddItemForm} from "./components/AddItemForm";
 import {EditableSpan} from "./components/EditableSpan";
 import {Delete} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/store";
-import {addTaskAC, changeFilterAC, removeAllTaskAC, TasksType} from "./state/Task-Reducer";
+import {AppRootStateType, useAppDispatch} from "./state/store";
+import {addTaskAC, changeFilterAC, createTaskTC, getTasksTC, removeAllTaskAC} from "./state/Task-Reducer";
 import {editTodolistTitleAC, removeTodoListAC} from "./state/TodoList-Reducer";
 import Task from "./components/Task";
-import {TodolistType} from "./api/todolist-api";
+import {TaskStatuses, TaskType, TodolistType} from "./api/todolist-api";
 
 export type FilterValuesType = "all" | "active" | "completed" | '3 tasks';
 
@@ -21,14 +20,17 @@ type PropsType = {
 }
 
 export const Todolist = memo(({todolist}: PropsType) => {
-    console.log('todolist')
     const {id, title} = todolist
 
-    let tasks = useSelector<AppRootStateType, TasksType[]>(state => state.tasks[id].tasksList)
+    let tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[id].tasksList)
     let filter = useSelector<AppRootStateType, FilterValuesType>(state => state.tasks[id].filter)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
-    const addTask = useCallback((title: string) => dispatch(addTaskAC(id, title)), [dispatch])
+    useEffect(()=> {
+        dispatch(getTasksTC(id))
+    },[])
+
+    const addTask = useCallback((title: string) => dispatch(createTaskTC(id, title)), [])
     const deleteAllTasks = useCallback(() => dispatch(removeAllTaskAC(id)), [dispatch])
 
     const deleteTodolist = useCallback(() => dispatch(removeTodoListAC(id)), [dispatch])
@@ -42,18 +44,18 @@ export const Todolist = memo(({todolist}: PropsType) => {
 
 
     if (filter === "active") {
-        tasks = tasks.filter(t => !t.isDone);
+        tasks = tasks.filter(t => t.status == TaskStatuses.New);
     }
     if (filter === "completed") {
-        tasks = tasks.filter(t => t.isDone);
+        tasks = tasks.filter(t => t.status == TaskStatuses.Completed);
     }
     if (filter == '3 tasks') {
         tasks = tasks.filter((el, index) => index < 3 ? el == el : '')
     }
     const mappedTasks = tasks?.map(t => {
         return (
-            <li key={t.id} className={t.isDone ? classes.opacity : ''}>
-                <Task task={t} id={id}/>
+            <li key={t.id} className={t.status ? classes.opacity : ''}>
+                <Task task={t} todolistId={id}/>
             </li>
         )
     })

@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import {Container} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {addTodoListAC, getTodoTC} from "./state/TodoList-Reducer";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {AppRootStateType, useAppDispatch} from "./state/store";
 import { TodolistType} from "./api/todolist-api";
 
@@ -15,6 +15,7 @@ function App() {
     console.log('app')
     const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
     const dispatch = useAppDispatch()
+    //  const dispatch = useDispatch()
 
     useEffect(()=> {
         dispatch(getTodoTC())

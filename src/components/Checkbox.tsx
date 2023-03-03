@@ -1,8 +1,9 @@
 import React, {ChangeEvent} from 'react';
+import {TaskStatuses} from "../api/todolist-api";
 
 export type CheckboxPropsType = {
     callback: ( CheckboxValue: boolean)=>void
-    isDone: boolean
+    checked: boolean
 }
 export const UCheckbox = (props: CheckboxPropsType) => {
     const onChangeCheckboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -11,7 +12,7 @@ export const UCheckbox = (props: CheckboxPropsType) => {
     return (
         <input
             type={'checkbox'}
-            checked={props.isDone}
+            checked={props.checked}
             onChange={onChangeCheckboxHandler}
         />
     );

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 const instance = axios.create({
     baseURL: "https://social-network.samuraijs.com/api/1.1",
@@ -20,6 +20,18 @@ export const todolistApi = {
     createTodolist (title: string) {
         return instance.post<ResponseType<{item: TodolistType}>>(`/todo-lists`, {title})
     },
+    getTasks (todolistId: string) {
+        return instance.get<GetTaskResponse>(`/todo-lists/${todolistId}/tasks`)
+    },
+    deleteTask (todolistId: string, taskId: string) {
+        return instance.delete<DeleteTaskResponse>(`/todo-lists/${todolistId}/tasks/${taskId}`)
+    },
+    createTask (todolistId: string, title: string) {
+        return instance.post<{title: string},AxiosResponse<ResponseType<{item: TaskType}>>>(`/todo-lists/${todolistId}/tasks/`, {title})
+    },
+    updateTask (todolistId: string, taskId: string, model: UpdateTaskModelType) {
+        return instance.put<UpdateTaskModelType, AxiosResponse<ResponseType<{item: TaskType}>>>(`/todo-lists/${todolistId}/tasks/${taskId}`, model)
+    }
 }
 export type TodolistType = {
     id: string,
@@ -31,4 +43,49 @@ type ResponseType<I = {}> = {    // по умолчанию I это {}
     resultCode: number
     messages: string[]
     data: I
+}
+
+export enum TaskStatuses {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 4
+}
+export enum TaskPriorities {
+    Low = 0,
+    Middle = 1 ,
+    Hi = 2,
+    Urgently = 3,
+    Later = 4
+}
+
+export type TaskType = {
+    title: string
+    description: string
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
+    id: string
+    todolistId: string
+    order: number
+    addedDate: string
+}
+export type UpdateTaskModelType = {
+    title: string
+    description: string
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
+}
+type GetTaskResponse = {
+    error: string | null
+    totalCount: number
+    items: TaskType[]
+}
+type DeleteTaskResponse = {
+    messages: string[]
+    resultCode: number
+    data: TaskType[]
 }

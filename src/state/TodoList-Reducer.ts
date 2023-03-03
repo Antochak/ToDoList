@@ -1,8 +1,8 @@
 import {v1} from "uuid";
 import {todolistApi, TodolistType} from "../api/todolist-api";
-import {AnyAction, Dispatch} from "redux";
+import {Dispatch} from "redux";
 
-export type ActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType | setTodosType
+export type TodolistActionsType = removeTodoListACType | addTodoListTitleACType | editTodolistTitleACType | setTodosType
 
 const initialState: TodolistType[] = []
 export const TodoListReducer = (state = initialState, action: any): TodolistType[] => {
@@ -10,7 +10,7 @@ export const TodoListReducer = (state = initialState, action: any): TodolistType
         case 'REMOVE_TODOLIST':
             return state.filter(el => el.id !== action.todoListId);
         case 'ADD_TODOLIST':
-            return [{id: action.todoListId, title: action.title, addedDate: '', order: 0}, ...state];
+            return [...state, {id: action.todoListId, title: action.title, addedDate: '', order: 0}];
         case 'CHANGE_TDL_TITLE':
             const todolist = state.find(tl=>tl.id == action.todoListId)
             if(todolist) todolist.title = action.title
@@ -56,4 +56,5 @@ export const getTodoTC = () => (dispatch: Dispatch) => {
             .then((res)=> {
                 dispatch(setTodos(res))
             })
-    }
+}
+
