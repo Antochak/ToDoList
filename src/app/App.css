@@ -1,15 +1,11 @@
-
+/*
 .App {
-
-}
-.AppWrapper {
-  margin-top: 20px;
+  padding: 30px;
   display: flex;
-  flex-direction: row;
 }
 
 .App > div {
-
+  margin-right: 50px;
 }
 
 .error {
@@ -27,4 +23,4 @@
 .is-done {
   opacity: 0.5;
 }
-
+*/
