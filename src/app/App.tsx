@@ -4,7 +4,6 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import './App.css'
 import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 import {useAppDispatch, useAppSelector} from './store'
-import {RequestStatusType} from './app-reducer'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -12,16 +11,14 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
-import {Menu} from '@mui/icons-material';
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {Login} from "../features/login/Login";
 import {logOutTC, meTC} from "../features/login/auth-reducer";
 import {CircularProgress} from "@mui/material";
-
-
+import Menu from "@mui/material/Menu";
 
 function App() {
-    const status = useAppSelector<RequestStatusType>((state) => state.app.status)
+    const status = useAppSelector<string>((state) => state.app.status)
     const isInitialized = useAppSelector<boolean>((state) => state.auth.isInitialized)
     const isLogin = useAppSelector(state => state.auth.isLoggedIn)
     const dispatch = useAppDispatch()
@@ -37,13 +34,12 @@ function App() {
             <CircularProgress/>
         </div>
     }
-
     return <div className="App">
             <ErrorSnackbar/>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
-                        <Menu/>
+                        <Menu open={false}/>
                     </IconButton>
                     <Typography variant="h6">
                         News

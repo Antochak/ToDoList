@@ -7,10 +7,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import Button from "@mui/material/Button";
-import {useFormik} from "formik";
 import {logInTC} from "./auth-reducer";
 import {Navigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/store";
+import {useFormik} from "formik";
 
 export type FormDataType = {
     email?: string
